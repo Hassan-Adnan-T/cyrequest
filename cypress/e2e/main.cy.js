@@ -1,6 +1,8 @@
+
 describe('Login Api', () => {
 
   it("should handle successful login api", () => {
+    
     const loginData = {
       username: 'mor_2314',
       password: '83r5^_'
@@ -22,6 +24,7 @@ describe('Login Api', () => {
     cy.get('@invalidCreds').then((invalidCreds) => {
       cy.request({
         method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
         url: '/auth/login',
         body: invalidCreds,
         failOnStatusCode: false
@@ -31,5 +34,19 @@ describe('Login Api', () => {
           expect(response.body).to.eq('username or password is incorrect')
         })
     })
+  })
+
+  it("should handle empty credentials", () => {
+
+    cy.request({
+      method:'POST',
+      headers: { 'Content-Type': 'application/json'},
+      url: '/auth/login',
+      body: {},
+      failOnStatusCode: false
+    })
+      .then((response) => {
+        expect(response.status).to.eq(400)
+      })
   })
 })
